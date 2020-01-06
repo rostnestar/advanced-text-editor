@@ -11,9 +11,8 @@ const FileZone = React.memo( ({ synonym, setWord, resetContext }) => {
         const selection = window.getSelection();
         if (synonym && selection.toString()) {
             _replaceSelectedWordWithSynonym(selection, synonym);
-
-            resetContext();
         }
+        resetContext();
     }, [synonym]);
 
     const _replaceSelectedWordWithSynonym = (selection, synonym) => {
