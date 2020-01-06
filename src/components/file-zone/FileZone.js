@@ -1,36 +1,54 @@
-import React, { useContext, useEffect, useState, useRef, useCallback } from "react";
+import React, { useContext, useEffect, useRef, useCallback } from "react";
 import "./FileZone.css";
-import {Context} from "../context";
+import { Context, connectToContext } from "../context/context";
 
-export default function FileZone(props) {
-
-    const [selected, setSelected] = useState("");
-
-    const {state, dispatch} = useContext(Context);
+const FileZone = React.memo( ({ synonym, setWord, resetContext }) => {
 
     const textarea = useRef(null);
-    const setTextarea = useCallback(node => {textarea.current = node}, []);
+    const setTextareaRef = useCallback(node => {textarea.current = node}, []);
 
     useEffect(() => {
-        if (state.synonym) {
-            let regexp = new RegExp(`\\b(${selected})\\b`);
-            textarea.current.innerHTML =
-                textarea.current.innerHTML.toString().replace(regexp, state.synonym);
+        const selection = window.getSelection();
+        if (synonym && selection.toString()) {
+            _replaceSelectedWordWithSynonym(selection, synonym);
 
-            dispatch({type: "SELECT_WORD", data: ""});
-            dispatch({type: "SELECT_SYNONYM", data: ""});
+            resetContext();
         }
-    });
+    }, [synonym]);
+
+    const _replaceSelectedWordWithSynonym = (selection, synonym) => {
+        let replacement = _capitalize(selection.toString(), synonym);
+        let range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(document.createTextNode(replacement));
+    };
+
+    const _capitalize = (selection, synonym) => {
+        return selection.charAt(0) === selection.charAt(0).toUpperCase()
+            ? synonym.charAt(0).toUpperCase() + synonym.slice(1)
+            : synonym
+    };
 
     const _onSelectWord = () => {
-        const selected = window.getSelection().toString();
-        if (selected && selected.split(" ").length === 1) {
-            setSelected(selected);
-            dispatch({type: "SELECT_WORD", data: selected})
+        const selectedWord = window.getSelection().toString();
+        if (selectedWord && selectedWord.split(" ").length === 1) {
+            setWord(selectedWord);
         }
     };
 
     return (
         <div id="file" ref={textarea} contentEditable={true} onSelect={_onSelectWord}/>
     );
-}
+});
+
+const Select = () => {
+    const { synonym, setWord, resetContext } = useContext(Context);
+
+    return {
+        synonym: synonym,
+        setWord: setWord,
+        resetContext: resetContext
+    }
+};
+
+export default connectToContext(FileZone, Select)

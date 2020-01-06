@@ -1,31 +1,25 @@
-import React, {useReducer} from "react";
+import React from "react";
 import "./App.css";
 import ControlPanel from "./components/control-panel/ControlPanel";
 import FileZone from "./components/file-zone/FileZone";
 import SynonymsZone from "./components/synonyms-zone/SynonymsZone";
-import {Context, reducer, initialState} from "./components/context";
+import ContextProvider from "./components/context/ContextProvider";
 
-export default function App() {
-    const [state, dispatch] = useReducer(reducer, initialState);
-
+export default function App(props) {
     return (
         <div className="App">
             <header>
                 <span>Advanced Text Editor</span>
             </header>
             <main>
-                <Context.Provider value={{state, dispatch}}>
+                <ContextProvider>
                     <ControlPanel/>
                     <div className="working-area">
-                        <Context.Consumer>
-                            {value => <FileZone synonym={value.state.synonym}/>}
-                        </Context.Consumer>
+                        <FileZone/>
                         <div><h4>Synonyms:</h4></div>
-                        <Context.Consumer>
-                            {value => <SynonymsZone word={value.state.word}/>}
-                        </Context.Consumer>
+                        <SynonymsZone/>
                     </div>
-                </Context.Provider>
+                </ContextProvider>
             </main>
         </div>
     );
