@@ -30,9 +30,8 @@ const FileZone = React.memo( ({ synonym, setWord, resetContext }) => {
 
     const _onSelectWord = () => {
         const selectedWord = window.getSelection().toString();
-        if (selectedWord && selectedWord.split(" ").length === 1) {
-            setWord(selectedWord);
-        }
+        if (selectedWord && selectedWord.split(" ").length === 1) setWord(selectedWord);
+        else setWord("");
     };
 
     return (

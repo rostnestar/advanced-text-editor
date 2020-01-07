@@ -17,4 +17,4 @@ Run `npm install` in order to setup application.
 
 ### Start Application
 Application can be started by executing: `npm start`. 
-Development server will be started. By default application is available at `http://localhost:3000/` .
+Development server will be started. By default application is available at `http://localhost:3000/`.

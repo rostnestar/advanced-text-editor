@@ -24,3 +24,8 @@
     top:1px;
 }
 
+p {
+    white-space: pre-line;
+    text-align: center;
+}
+
